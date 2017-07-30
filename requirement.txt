@@ -1,0 +1,11 @@
+flask
+sqlalchemy
+flask_sqlaclhemy
+graphene
+graphene_sqlalchemy
+flask_graphql
+flask_apidoc
+fdb
+
+#private key jadi token
+#login jadi token
