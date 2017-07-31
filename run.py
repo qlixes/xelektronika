@@ -41,7 +41,7 @@ def token_required(f):
 
 def verify(username, password):
 
-    user = vdivisiuserid01.query.filter_by(useridkode=username).first()
+    user = userid.query.filter_by(useridkode=username).first()
 
     if user:
 
@@ -49,7 +49,7 @@ def verify(username, password):
 
         if check_password_hash(phash, password):
             #payload
-            token = jwt.encode({'id' : user.nomor, 'nama': user.nama, 'lokasi': user.lokasi, 'divisi': user.divisinomor, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=10), 'iss': 'klikmediasoft'}, app.config['SECRET_KEY'])
+            token = jwt.encode({'id' : user.nomor, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=10), 'iss': 'klikmediasoft'}, app.config['SECRET_KEY'])
 
             return jsonify({'token': token.decode('UTF-8')})
 

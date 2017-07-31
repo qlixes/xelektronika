@@ -21,9 +21,6 @@ trmst = {
     "purchaseOrder":"82" ,
 }
 
-
-
-
 class vpublokasi(db.Model):
 
     __tablename__ = 'vpublokasi'
@@ -36,6 +33,14 @@ class vpublokasi(db.Model):
     kota = db.Column(db.String(250))
     ket1 = db.Column(db.String(250))
     ket2 = db.Column(db.String(250))
+#
+class divisi(db.Model):
+
+    __tablename__ = 'divisi'
+
+    nomor = db.Column(db.Integer, primary_key = True)
+    kode = db.Column(db.String(20), unique=True)
+    keterangan = db.Column(db.String(128))
 
 class userid(db.Model):
     __tablename__ = 'userid'
@@ -45,7 +50,15 @@ class userid(db.Model):
     nama = db.Column(db.String(30))
     psw = db.Column(db.String(50))
     lokasi = db.Column(db.Integer, db.ForeignKey('vpublokasi.lokasi'))
-    vpublokasi = db.relationship('vpublokasi', uselist = True, lazy = 'dynamic')
+
+class divisiuserid(db.Model):
+    __tablename__ = 'divisiuserid'
+
+    nomor = db.Column(db.Integer, primary_key=True)
+    nomoruserid = db.relationship('userid', backref='divisiuserid')
+    nomordivisi = db.relationship('divisi', backref='divisiuserid')
+    #nomoruserid = db.Column(db.Integer, db.ForeignKey('userid.nomor'))
+    #nomordivisi = db.Column(db.Integer, db.ForeignKey('divisi.nomor'))
 
 class vpubph(db.Model):
 
@@ -322,11 +335,3 @@ class vbayardet02(db.Model):
     nomorbayarmst = db.Column(db.Integer, db.ForeignKey('vpubbayarmst.nomor'))
     nomortrmst = db.Column(db.Integer, db.ForeignKey('vpubtrmst02.nomor'))
     nilai = db.Column(db.Float)
-
-class divisi(db.Model):
-
-    __tablename__ = 'divisi'
-
-    nomor = db.Column(db.Integer, primary_key = True)
-    kode = db.Column(db.String(20), unique=True)
-    keterangan = db.Column(db.String(128))
