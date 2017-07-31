@@ -41,7 +41,7 @@ def token_required(f):
 
 def verify(username, password):
 
-    user = userid.query.filter_by(useridkode=username).first()
+    user = userid.query.filter_by(kode=username).first()
 
     if user:
 

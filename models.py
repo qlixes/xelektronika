@@ -50,13 +50,14 @@ class userid(db.Model):
     nama = db.Column(db.String(30))
     psw = db.Column(db.String(50))
     lokasi = db.Column(db.Integer, db.ForeignKey('vpublokasi.lokasi'))
+    divisi = db.relationship('divisiuserid', backref='userid')
 
 class divisiuserid(db.Model):
     __tablename__ = 'divisiuserid'
 
     nomor = db.Column(db.Integer, primary_key=True)
-    nomoruserid = db.relationship('userid', backref='divisiuserid')
-    nomordivisi = db.relationship('divisi', backref='divisiuserid')
+    nomoruserid = db.Column(db.Integer, db.ForeignKey('userid.nomor'))
+    nomordivisi = db.Column(db.Integer, db.ForeignKey('divisi.nomor'))
     #nomoruserid = db.Column(db.Integer, db.ForeignKey('userid.nomor'))
     #nomordivisi = db.Column(db.Integer, db.ForeignKey('divisi.nomor'))
 
