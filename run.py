@@ -7,6 +7,8 @@ from functools import wraps
 
 import config
 
+now = datetime.datetime.now()
+
 app = Flask(__name__)
 app.config.from_object(config)
 
@@ -31,9 +33,9 @@ def token_required(f):
                 current_user = userid.query.filter_by(nomor = data['id']).first()
             except:
                 
-                return jsonify({'message' : 'token invalid.'}), 401
+                return jsonify({'status': False, 'message' : 'token invalid.'}), 401
         else:
-            return jsonify({'message' : 'token is missing'}), 401
+            return jsonify({'status': False, 'message' : 'token is missing'}), 401
 
         return f(current_user, *args, **kwargs)
 
@@ -51,25 +53,23 @@ def verify(username, password):
             #payload
             token = jwt.encode({'id' : user.nomor, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=10), 'iss': 'klikmediasoft'}, app.config['SECRET_KEY'])
 
-            return jsonify({'token': token.decode('UTF-8')})
+            return jsonify({'status': True, 'token': token.decode('UTF-8')})
 
         else:
-            return jsonify({'message': 'user and password did not match.'}), 401
+            return jsonify({'status': False, 'message': 'invalid credentials'}), 401
 
     else:
-        return jsonify({'message': 'login is empty.'}), 401
+        return jsonify({'status': False, 'message': 'login is empty.'}), 401
 
 @app.route('/login', methods=['POST'])
 def set_login():
 
     data = request.json
 
-    #if not data or not data['username'] or not data['password']:
-    #    return jsonify({'message' : 'invalid credentials.'})
     if data and data['username'] and data['password']:
         return verify(data['username'], data['password'])
     else:
-        return jsonify({'message' : 'login was empty'}), 401
+        return jsonify({'status': False, 'message' : 'login was empty'}), 401
     #    return verify(data['username'], data['password'])
 
 @app.route('/lokasi')
@@ -100,7 +100,7 @@ def get_lokasi(current_user, detail = None):
 
         dLokasi.append(rLokasi)
 
-    return jsonify({'result':dLokasi})
+    return jsonify({'status': False, 'result':dLokasi})
 
 @app.route('/<transac>/', defaults={'page':1})
 @app.route('/<transac>/<int:page>')
@@ -219,12 +219,13 @@ def get_list_transaction(current_user, transac,page):
 
             output_trmst.append(row_data)
 
-    return jsonify({'result':output_trmst})
+    return jsonify({'status': False, 'result':output_trmst})
 
-@app.route('/stok', defaults={'thn' : '2017'}) #show all stok
-@app.route('/stok/<int:thn>')
-def get_stok(thn):
-    return ''
+@app.route('/stok', defaults={'thn':now.year}) #show all stok
+@app.route('/stok/<int:thn>', defaults={'bln':now.month})
+@app.route('/stok/<int:thn>/<int:bln>')
+def get_stok(thn, bln):
+    return jsonify({'thn' : thn, 'bln' : bln})
 
 #context = SSL.Context(SSL.TLSv1_2_METHOD)
 #context.use_privatekey('client03.key')
