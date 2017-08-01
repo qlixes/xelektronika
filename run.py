@@ -231,5 +231,5 @@ def get_stok(thn):
 #context.use_certificate_file('client03.crt')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
     #app.run(host=,port=,debug=,ssl_context=context, Threaded=True)
